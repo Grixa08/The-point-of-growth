@@ -1,0 +1,246 @@
+.all-events-container {
+    font-family: 'Inter', Arial, sans-serif;
+    background: #fff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding-bottom: 70px; /* для нижнего меню */
+  }
+  
+  .banner {
+    position: relative;
+    height: 350px;
+    margin-bottom: 16px;
+  }
+  
+  .banner-bg {
+    position: absolute;
+    top: -20px; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg, #1e90ff 60%, #3b82f6 100%);
+    border-radius: 20px;
+  }
+  
+  .banner-carousel {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  
+  .banner-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    transition: transform 0.5s ease-in-out;
+  }
+  
+  .banner-slide.active {
+    z-index: 2;
+  }
+  
+  .banner-content {
+    position: relative;
+    width: 100%;
+    padding: 48px 16px 16px 16px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* было flex-start */
+    z-index: 3;
+    gap: 20px
+  }
+  
+
+  
+ 
+ 
+  
+  .see-all-btn {
+    background: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 0;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .see-all-btn:hover {
+    background: #f8f9fa;
+  }
+  
+  .btn-event {
+    background: #fff;
+    color: #1e90ff;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-bottom: 16px;
+  }
+  
+
+  
+  .slider-dots {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 4;
+  }
+  
+  .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #fff;
+    opacity: 0.4;
+    display: inline-block;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  
+  .dot.active {
+    opacity: 1;
+    background: #fff;
+  }
+  
+  .dot:hover {
+    opacity: 0.8;
+  }
+  
+  .section {
+    padding: 0 16px;
+    margin-top: 0;
+  }
+  
+  .first-section {
+    margin-top: 24px;
+  }
+  
+  .section h3 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+  
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  
+  .events-list {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 16px;
+    scroll-behavior: smooth;
+    scrollbar-width: none; /* Firefox */
+  }
+  
+  .events-list::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .event-card {
+    min-width: 320px;
+    max-width: 320px;
+    background: #a259ff;
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(162,89,255,0.12);
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.2s;
+  }
+  
+  .event-card:hover {
+    box-shadow: 0 8px 32px rgba(162,89,255,0.18);
+  }
+  
+  .event-img {
+    height: 160px;
+    background: #b983ff;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    position: relative;
+  }
+  
+  .event-info {
+    padding: 10px 12px 12px 12px;
+    background: #fff;
+    border-bottom-left-radius: 18px;
+    border-bottom-right-radius: 18px;
+    height: 120px;
+  }
+  
+  .event-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+  
+  .event-type {
+    font-size: 0.9rem;
+    color: #888;
+  }
+  
+  .bottom-nav {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    height: 60px;
+    background: #fff;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 10;
+  }
+  
+  .nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #b0b0b0;
+    font-size: 0.95rem;
+    font-weight: 500;
+    gap: 2px;
+    transition: color 0.2s;
+  }
+  
+  .nav-item.active {
+    color: #1e90ff;
+  } 
+  
+  /* Добавляю стиль для пустых секций */
+  .empty-events-placeholder {
+    color: #aaa;
+    padding: 8px 0;
+    width: 100%;
+    text-align: center;
+    font-size: 1rem;
+  } 
+  
+  .section.empty-section {
+    margin-top: 0;
+    padding-bottom: 0;
+  }
+  
+  .events-list.empty-list {
+    display: block;
+    padding-bottom: 0;
+    min-height: 0;
+  }
+  
+  
