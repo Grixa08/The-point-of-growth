@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './AllEvents.css';
 import EventCard from '../components/EventCard';
+import EventsByType from '../components/EventsByType'; // Новый компонент для отображения событий по типу
 
 // Интерфейс для ивента
 export interface EventItem {
@@ -18,19 +20,28 @@ export interface EventItem {
 const bannerSlides = [
   {
     id: 1,
-    title: 'Олимпиады'
+    title: 'Олимпиады',
+    type: 'Олимпиада'
   },
   {
     id: 2,
-    title: 'Конкурсы'
+    title: 'Конкурсы',
+    type: 'Конкурс'
   },
   {
     id: 3,
-    title: 'Стажировки'
+    title: 'Стажировки',
+    type: 'Стажировка'
   },
   {
     id: 4,
-    title: 'Вакансии'
+    title: 'Вакансии',
+    type: 'Вакансия'
+  },
+  {
+    id: 5,
+    title: "События",
+    type: "События"
   }
 ];
 
@@ -51,19 +62,21 @@ const mockEvents: EventItem[] = [
     type: 'Олимпиада',
     company: 'ООО "Наука"',
     date: '15 сентября',
+    isNew: true,
     tags: ['Backend'],
   },
   {
     id: '3',
-    title: 'Олимпиада по физике',
-    type: 'Вакансия',
+    title: 'Конкурс программирования',
+    type: 'Конкурс',
     company: 'ООО "Наука"',
     date: '15 сентября',
+    isNew: true,
     tags: ['Backend'],
   },
   {
     id: '4',
-    title: 'Олимпиада по физике',
+    title: 'Стажировка в IT компании',
     type: 'Стажировка',
     company: 'ООО "Наука"',
     date: '15 сентября',
@@ -71,8 +84,16 @@ const mockEvents: EventItem[] = [
   },
   {
     id: '5',
-    title: 'Олимпиада по физике',
-    type: 'Конкурс',
+    title: 'Вакансия разработчика',
+    type: 'Вакансия',
+    company: 'ООО "Наука"',
+    date: '15 сентября',
+    tags: ['Backend'],
+  },
+  {
+    id: '6',
+    title: 'Вакансия разработчика',
+    type: 'События',
     company: 'ООО "Наука"',
     date: '15 сентября',
     tags: ['Backend'],
@@ -80,77 +101,119 @@ const mockEvents: EventItem[] = [
 ];
 
 function AllEvents() {
-    const [currentSlide, setCurrentSlide] = useState(0);
+    const navigate = useNavigate();
+    const [currentSlide, setCurrentSlide] = useState(1);
     const [isAutoPlaying, setIsAutoPlaying] = useState(true);
+    const [isTransitioning, setIsTransitioning] = useState(true);
+    const [selectedType, setSelectedType] = useState<string | null>(null); // Новое состояние для выбранного типа
 
-    // Фиксированный список типов ивентов
-    const allTypes = ['Олимпиада', 'Конкурс', 'Стажировка', 'Вакансия'];
+    // Создаем расширенный массив слайдов для бесконечной карусели
+    const extendedSlides = [bannerSlides[bannerSlides.length - 1], ...bannerSlides, bannerSlides[0]];
 
-    // Группируем ивенты по типу
+    const allTypes = ['Олимпиада', 'Конкурс', 'Стажировка', 'Вакансия', 'События'];
+
     const eventsByType: Record<string, EventItem[]> = {};
     allTypes.forEach(type => {
       eventsByType[type] = mockEvents.filter(e => e.type === type);
     });
 
-    // Секции с ивентами (не пустые)
     const nonEmptySections = allTypes.filter(type => eventsByType[type].length > 0);
-    // Секции без ивентов (пустые)
     const emptySections = allTypes.filter(type => eventsByType[type].length === 0);
 
-    // Автоматическое переключение слайдов
     useEffect(() => {
-        if (!isAutoPlaying) return;
+        if (!isAutoPlaying || selectedType) return; // Не автоплеим если открыт конкретный тип
 
         const interval = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % bannerSlides.length);
+            setCurrentSlide((prev) => {
+                const nextSlide = prev + 1;
+
+                if (nextSlide === extendedSlides.length - 1) {
+                    setTimeout(() => {
+                        setIsTransitioning(false);
+                        setCurrentSlide(1);
+                        setTimeout(() => setIsTransitioning(true), 50);
+                    }, 500);
+                    return nextSlide;
+                }
+
+                return nextSlide;
+            });
         }, 3000);
 
         return () => clearInterval(interval);
-    }, [isAutoPlaying]);
+    }, [isAutoPlaying, extendedSlides.length, selectedType]);
 
-    // Обработчики для карусели
     const goToSlide = (index: number) => {
-        setCurrentSlide(index);
+        const extendedIndex = index + 1;
+        setCurrentSlide(extendedIndex);
         setIsAutoPlaying(false);
-        // Возобновляем автопрокрутку через 5 секунд
+        setIsTransitioning(true);
         setTimeout(() => setIsAutoPlaying(true), 5000);
     };
 
+    const handleShowAll = (type: string) => {
+        setSelectedType(type);
+        setIsAutoPlaying(false); // Останавливаем карусель при переходе
+    };
 
+    const handleBackToAll = () => {
+        setSelectedType(null);
+        setIsAutoPlaying(true); // Возобновляем карусель
+    };
 
+    // Если выбран конкретный тип, показываем компонент EventsByType
+    if (selectedType) {
+        return (
+            <EventsByType 
+                type={selectedType}
+                events={eventsByType[selectedType] || []}
+                onBack={handleBackToAll}
+            />
+        );
+    }
 
     return (
         <div className="all-events-container">
-            {/* Верхний баннер с каруселью */}
             <div className="banner">
-                <div className="banner-bg" />
-                <div className="banner-carousel">
-                    {bannerSlides.map((slide, index) => (
-                        <div 
-                            key={slide.id}
-                            className={`banner-slide ${index === currentSlide ? 'active' : ''}`}
-                            style={{
-                                transform: `translateX(${(index - currentSlide) * 100}%)`
-                            }}
+                <div
+                    className="banner-carousel"
+                    style={{
+                        transform: `translateX(calc(-${currentSlide * 100}% - ${currentSlide * 20}px))`,
+                        transition: isTransitioning ? 'transform 0.5s ease-in-out' : 'none'
+                    }}
+                >
+                    {extendedSlides.map((slide, index) => (
+                        <div
+                            key={`${slide.id}-${index}`}
+                            className="banner-slide"
                         >
                             <div className="banner-content">
                                 <h2>{slide.title}</h2>
-                                <button className="see-all-btn">See all</button>
+                                <button 
+                                    className="see-all-btn"
+                                    onClick={() => handleShowAll(slide.type)}
+                                >
+                                    Показать все
+                                </button>
                             </div>
                         </div>
                     ))}
-                    
                 </div>
                 
                 {/* Точки индикаторы */}
                 <div className="slider-dots">
-                    {bannerSlides.map((_, index) => (
-                        <span 
-                            key={index}
-                            className={`dot ${index === currentSlide ? 'active' : ''}`}
-                            onClick={() => goToSlide(index)}
-                        />
-                    ))}
+                    {bannerSlides.map((_, index) => {
+                        const isActive = index === (currentSlide - 1) ||
+                                       (currentSlide === 0 && index === bannerSlides.length - 1) ||
+                                       (currentSlide === extendedSlides.length - 1 && index === 0);
+                        return (
+                            <span
+                                key={index}
+                                className={`dot ${isActive ? 'active' : ''}`}
+                                onClick={() => goToSlide(index)}
+                            />
+                        );
+                    })}
                 </div>
             </div>
 
@@ -159,7 +222,12 @@ function AllEvents() {
               <div className={`section${idx === 0 ? ' first-section' : ''}`} key={type}>
                 <div className="section-header">
                   <h3>{type}</h3>
-                  <button className="btn-event">Все</button>
+                  <button 
+                    className="btn-event"
+                    onClick={() => handleShowAll(type)}
+                  >
+                    Все
+                  </button>
                 </div>
                 <div className="events-list">
                   {eventsByType[type].map(event => (

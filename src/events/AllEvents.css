@@ -5,38 +5,36 @@
     display: flex;
     flex-direction: column;
     position: relative;
-    padding-bottom: 70px; /* для нижнего меню */
+    padding-bottom: 70px; 
   }
   
   .banner {
     position: relative;
     height: 350px;
     margin-bottom: 16px;
+    margin: 10px 16px;
+    overflow: hidden; 
   }
   
-  .banner-bg {
-    position: absolute;
-    top: -20px; left: 0; right: 0; bottom: 0;
-    background: linear-gradient(135deg, #1e90ff 60%, #3b82f6 100%);
-    border-radius: 20px;
-  }
+
   
   .banner-carousel {
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    display: flex;
   }
   
   .banner-slide {
-    position: absolute;
-    top: 0;
-    left: 0;
+    position: relative;
+    flex-shrink: 0;
     width: 100%;
     height: 100%;
     display: flex;
     align-items: flex-end;
-    transition: transform 0.5s ease-in-out;
+    background: #3596FF;
+    border-radius: 20px;
+    margin-right: 20px; 
   }
   
   .banner-slide.active {
@@ -50,7 +48,7 @@
     color: #fff;
     display: flex;
     flex-direction: column;
-    align-items: center; /* было flex-start */
+    align-items: center; 
     z-index: 3;
     gap: 20px
   }
