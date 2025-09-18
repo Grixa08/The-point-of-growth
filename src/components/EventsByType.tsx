@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import EventCard from '../components/EventCard';
-import { EventItem } from '../events/allEvents';
+import type { EventItem } from '../events/allEvents';
 import './EventsByType.css';
 
 interface EventsByTypeProps {
@@ -10,6 +11,25 @@ interface EventsByTypeProps {
 }
 
 function EventsByType({ type, events, onBack }: EventsByTypeProps) {
+    const navigate = useNavigate();
+    // Обработчик нативной кнопки "назад"
+    useEffect(() => {
+        const handleBackButton = (event: Event) => {
+            event.preventDefault();
+            onBack(); // Возвращаемся на экран "все ивенты"
+        };
+
+        // Добавляем обработчик для нативной кнопки "назад"
+        window.addEventListener('popstate', handleBackButton);
+        
+        // Добавляем запись в историю, чтобы кнопка "назад" работала правильно
+        window.history.pushState(null, '', window.location.pathname);
+
+        return () => {
+            window.removeEventListener('popstate', handleBackButton);
+        };
+    }, [onBack]);
+
     // Функция для получения градиента по типу
     const getGradientStyle = (eventType: string): React.CSSProperties => {
         const gradients: Record<string, string> = {
@@ -34,9 +54,6 @@ function EventsByType({ type, events, onBack }: EventsByTypeProps) {
                 className="events-header"
                 style={headerStyle}
             >
-                <button className="back-button" onClick={onBack}>
-                    ←
-                </button>
                 <div >
                     <h1>Раздел</h1>
                     <h1>{type}</h1>
@@ -58,15 +75,15 @@ function EventsByType({ type, events, onBack }: EventsByTypeProps) {
 
             {/* Нижнее меню */}
             <div className="bottom-nav">
-                <div className="nav-item">
+                <div className="nav-item" onClick={() => navigate('/allEvents')}>
                     <span role="img" aria-label="events">📅</span>
                     <div>Все ивенты</div>
                 </div>
-                <div className="nav-item">
+                <div className="nav-item" onClick={() => navigate('/my')}>
                     <span role="img" aria-label="my-events">🔔</span>
                     <div>Мои ивенты</div>
                 </div>
-                <div className="nav-item">
+                <div className="nav-item" onClick={() => navigate('/account')}>
                     <span role="img" aria-label="account">👤</span>
                     <div>Аккаунт</div>
                 </div>

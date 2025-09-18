@@ -5,7 +5,7 @@ import EventCard from '../components/EventCard';
 import EventsByType from '../components/EventsByType'; // Новый компонент для отображения событий по типу
 
 // Интерфейс для ивента
-export interface EventItem {
+export type EventItem = {
   id: string;
   title: string;
   type: string;
@@ -98,6 +98,15 @@ const mockEvents: EventItem[] = [
     date: '15 сентября',
     tags: ['Backend'],
   },
+  {
+    id: '7',
+    title: 'Конкурс программированияz',
+    type: 'Конкурс',
+    company: 'ООО "Наука"',
+    date: '15 сентября',
+    isNew: true,
+    tags: ['Backend'],
+  }
 ];
 
 function AllEvents() {
@@ -249,15 +258,15 @@ function AllEvents() {
 
             {/* Нижнее меню */}
             <div className="bottom-nav">
-                <div className="nav-item active">
+                <div className="nav-item" onClick={() => navigate('/allEvents')}>
                     <span role="img" aria-label="events">📅</span>
                     <div>Все ивенты</div>
                 </div>
-                <div className="nav-item">
+                <div className="nav-item" onClick={() => navigate('/my')}>
                     <span role="img" aria-label="my-events">🔔</span>
                     <div>Мои ивенты</div>
                 </div>
-                <div className="nav-item">
+                <div className="nav-item" onClick={() => navigate('/account')}>
                     <span role="img" aria-label="account">👤</span>
                     <div>Аккаунт</div>
                 </div>

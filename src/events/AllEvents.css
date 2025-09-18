@@ -152,14 +152,14 @@
   }
   
   .event-card {
-    min-width: 320px;
-    max-width: 320px;
-    background: #a259ff;
+    min-width: 358px;
+    max-width: 358px;
     border-radius: 24px;
     overflow: hidden;
     box-shadow: 0 4px 24px rgba(162,89,255,0.12);
     display: flex;
     flex-direction: column;
+    margin: auto;
     transition: box-shadow 0.2s;
   }
   
@@ -194,17 +194,6 @@
     color: #888;
   }
   
-  .bottom-nav {
-    position: fixed;
-    left: 0; right: 0; bottom: 0;
-    height: 60px;
-    background: #fff;
-    border-top: 1px solid #eee;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    z-index: 10;
-  }
   
   .nav-item {
     display: flex;
@@ -216,10 +205,7 @@
     gap: 2px;
     transition: color 0.2s;
   }
-  
-  .nav-item.active {
-    color: #1e90ff;
-  } 
+
   
   /* Добавляю стиль для пустых секций */
   .empty-events-placeholder {
@@ -241,4 +227,21 @@
     min-height: 0;
   }
   
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: #fff;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+  }
   
+  .bottom-nav .nav-item {
+    cursor: pointer;
+    user-select: none;
+  }
