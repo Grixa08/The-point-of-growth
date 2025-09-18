@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginForm from './components/Login';
 import AllEvents from './events/allEvents';
-import EventsByType from './components/EventsByType';
 import MyEvents from './components/MyEvents';
 import Account from './components/Account';
 
@@ -11,7 +10,6 @@ function App() {
       <Routes>
         <Route path="/" element={<LoginForm />} />
         <Route path="/allEvents" element={<AllEvents />} />
-        <Route path="/events/:type" element={<EventsByType />} />
         <Route path="/my" element={<MyEvents />} />
         <Route path="/account" element={<Account />} />
       </Routes>

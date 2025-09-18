@@ -1,6 +1,6 @@
 .all-events-container {
-    font-family: 'Inter', Arial, sans-serif;
-    background: #fff;
+    font-family: 'Roboto', Arial, sans-serif;
+    background: #FBFBFB;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -17,7 +17,6 @@
   }
   
 
-  
   .banner-carousel {
     position: relative;
     width: 100%;
@@ -156,15 +155,15 @@
     max-width: 358px;
     border-radius: 24px;
     overflow: hidden;
-    box-shadow: 0 4px 24px rgba(162,89,255,0.12);
+    /*box-shadow: 0 4px 24px rgba(162,89,255,0.12);*/
     display: flex;
     flex-direction: column;
     margin: auto;
-    transition: box-shadow 0.2s;
+    /*transition: box-shadow 0.2s;*/
   }
   
   .event-card:hover {
-    box-shadow: 0 8px 32px rgba(162,89,255,0.18);
+    /*box-shadow: 0 8px 32px rgba(162,89,255,0.18);*/
   }
   
   .event-img {
