@@ -2,6 +2,8 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginForm from './components/Login';
 import AllEvents from './events/allEvents';
 import MyEvents from './components/MyEvents';
+import EventDetail from './components/EventDetail';
+import AppLayout from './components/AppLayout';
 import Account from './components/Account';
 
 function App() {
@@ -9,9 +11,12 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LoginForm />} />
-        <Route path="/allEvents" element={<AllEvents />} />
-        <Route path="/my" element={<MyEvents />} />
-        <Route path="/account" element={<Account />} />
+        <Route element={<AppLayout />}>
+          <Route path="/allEvents" element={<AllEvents />} />
+          <Route path="/my" element={<MyEvents />} />
+          <Route path="/events/:id" element={<EventDetail />} />
+          <Route path="/account" element={<Account />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

@@ -4,12 +4,16 @@
   font-family: 'Roboto', Arial, sans-serif;
 }
 
+.html, body, #root, html, body {
+  background: #EFEFF4;
+}
+
 .bottom-nav{
     position: fixed;
     left: 0; right: 0; bottom: 0;
     height: 60px;
-    background: #fff;
-    border-top: 1px solid #eee;
+    background: #EFEFF4;
+    border-top: 2px solid #eee;
     display: flex;
     justify-content: space-around;
     align-items: center;

@@ -1,8 +1,13 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import './AllEvents.css';
 import EventCard from '../components/EventCard';
 import EventsByType from '../components/EventsByType'; // Новый компонент для отображения событий по типу
+import calendar_24 from '../img/calendar_24.svg';
+import channel_28 from '../img/channel_28.svg';
+import actions_24 from '../img/actions_24.svg';
+import devices_28 from '../img/devices_28.svg';
+import folder_24 from '../img/folder_24.svg';
+import arrow_right_24 from '../img/arrow_right_20.svg';
 
 // Интерфейс для ивента
 export type EventItem = {
@@ -21,26 +26,31 @@ const bannerSlides = [
   {
     id: 1,
     title: 'Олимпиады',
+    imageUrl: actions_24,
     type: 'Олимпиада'
   },
   {
     id: 2,
     title: 'Конкурсы',
+    imageUrl: channel_28,
     type: 'Конкурс'
   },
   {
     id: 3,
     title: 'Стажировки',
+    imageUrl: devices_28,
     type: 'Стажировка'
   },
   {
     id: 4,
     title: 'Вакансии',
-    type: 'Вакансия'
+    imageUrl: folder_24,
+    type: 'Вакансия'    
   },
   {
     id: 5,
     title: "События",
+    imageUrl: calendar_24,
     type: "События"
   }
 ];
@@ -110,7 +120,6 @@ const mockEvents: EventItem[] = [
 ];
 
 function AllEvents() {
-    const navigate = useNavigate();
     const [currentSlide, setCurrentSlide] = useState(1);
     const [isAutoPlaying, setIsAutoPlaying] = useState(true);
     const [isTransitioning, setIsTransitioning] = useState(true);
@@ -128,6 +137,14 @@ function AllEvents() {
 
     const nonEmptySections = allTypes.filter(type => eventsByType[type].length > 0);
     const emptySections = allTypes.filter(type => eventsByType[type].length === 0);
+
+    const iconByType: Record<string, string> = {
+      'Олимпиада': actions_24,
+      'Конкурс': channel_28,
+      'Стажировка': devices_28,
+      'Вакансия': folder_24,
+      'События': calendar_24,
+    };
 
     useEffect(() => {
         if (!isAutoPlaying || selectedType) return; // Не автоплеим если открыт конкретный тип
@@ -230,12 +247,18 @@ function AllEvents() {
             {nonEmptySections.map((type, idx) => (
               <div className={`section${idx === 0 ? ' first-section' : ''}`} key={type}>
                 <div className="section-header">
-                  <h3>{type}</h3>
+                  <h3 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    {iconByType[type] && (
+                      <img src={iconByType[type]} alt="" style={{ width: 24, height: 24 }} />
+                    )}
+                    {type}
+                  </h3>
                   <button 
                     className="btn-event"
                     onClick={() => handleShowAll(type)}
                   >
                     Все
+                    <img src={arrow_right_24} alt=""/>
                   </button>
                 </div>
                 <div className="events-list">
@@ -249,28 +272,19 @@ function AllEvents() {
             {/* Потом секции без ивентов (пустые) */}
             {emptySections.map(type => (
               <div className={"section empty-section"} key={type}>
-                <h3>{type}</h3>
+                <h3 style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  {iconByType[type] && (
+                    <img src={iconByType[type]} alt="" style={{ width: 24, height: 24 }} />
+                  )}
+                  {type}
+                </h3>
                 <div className="events-list empty-list">
                   <div className="empty-events-placeholder">Пока нет ивентов</div>
                 </div>
               </div>
             ))}
 
-            {/* Нижнее меню */}
-            <div className="bottom-nav">
-                <div className="nav-item" onClick={() => navigate('/allEvents')}>
-                    <span role="img" aria-label="events">📅</span>
-                    <div>Все ивенты</div>
-                </div>
-                <div className="nav-item" onClick={() => navigate('/my')}>
-                    <span role="img" aria-label="my-events">🔔</span>
-                    <div>Мои ивенты</div>
-                </div>
-                <div className="nav-item" onClick={() => navigate('/account')}>
-                    <span role="img" aria-label="account">👤</span>
-                    <div>Аккаунт</div>
-                </div>
-            </div>
+            {/* Нижнее меню удалено — теперь общее через AppLayout */}
         </div>
     )
 }
