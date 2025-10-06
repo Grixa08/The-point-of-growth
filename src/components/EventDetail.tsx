@@ -1,7 +1,10 @@
-import { useMemo } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import type { EventItem } from '../events/allEvents';
+import type { EventItem } from '../types/events';
 import '../events/AllEvents.css';
+import './EventsByType.css';
+import './EventDetail.css';
+import { fetchEventById } from '../api/events';
 
 // Временно берём данные из моков страницы allEvents через localStorage/передачу id
 // Когда появится API, заменим на запрос к серверу
@@ -20,17 +23,20 @@ function EventDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  const gradientsByType: Record<string, string> = {
-    'События': 'linear-gradient(180deg, #0099FF, #FFFFFF)',
-    'Олимпиада': 'linear-gradient(180deg, #FF9500, #FFBD61)',
-    'Конкурс': 'linear-gradient(180deg, #7378FF, #ACAFFF)',
-    'Стажировка': 'linear-gradient(180deg, #787878, #161616)',
-    'Вакансия': 'linear-gradient(135deg, #87C0FF, #007AFF)'
-  };
+  const [eventItem, setEventItem] = useState<EventItem | undefined>(() => fallbackEvents.find(e => e.id === id));
 
-  const eventItem = useMemo(() => {
-    const all = fallbackEvents;
-    return all.find(e => e.id === id);
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (!id) return;
+      try {
+        const data = await fetchEventById(id);
+        if (!cancelled && data) setEventItem(data);
+      } catch (_err) {
+        // фолбэк остаётся
+      }
+    })();
+    return () => { cancelled = true; };
   }, [id]);
 
   if (!eventItem) {
@@ -42,42 +48,46 @@ function EventDetail() {
     );
   }
 
+  // Стили и ресурсы хедера как в EventsByType
+  const gradients: Record<string, string> = {
+    'События': 'linear-gradient(180deg, #0099FF, #FFFFFF)',
+    'Олимпиада': 'linear-gradient(180deg, #FF9500, #FFBD61)',
+    'Конкурс': 'linear-gradient(180deg, #7378FF, #ACAFFF)',
+    'Стажировка': 'linear-gradient(180deg, #787878, #161616)',
+    'Вакансия': 'linear-gradient(135deg, #87C0FF, #007AFF)'
+  };
+  const headerStyle = { backgroundImage: gradients[eventItem.type] || 'linear-gradient(135deg, #787878, #161616)' };
+
+  // Отдельные изображения и формы для хедера в деталях не используются
+
   return (
-    <div className="all-events-container" style={{ padding: 16 }}>
-      <div className="section first-section">
-        <div className="event-card" style={{ maxWidth: 600 }}>
-          <div 
-            className="event-img"
-            style={{ 
-              height: 220,
-              background: gradientsByType[eventItem.type] || 'linear-gradient(180deg, #0099FF, #FFFFFF)'
-            }} 
-          />
-          <div className="event-info" style={{ height: 'auto' }}>
-            <div className="event-title" style={{ fontSize: '1.25rem' }}>{eventItem.title}</div>
-            <div className="event-type">{eventItem.type}</div>
-            <div style={{ fontSize: '0.95rem', color: '#666', marginTop: 6 }}>{eventItem.company}</div>
-            <div style={{ fontSize: '0.9rem', color: '#888', marginTop: 4 }}>{eventItem.date}</div>
-            {eventItem.tags && (
-              <div style={{ marginTop: 8 }}>
-                {eventItem.tags.map(tag => (
-                  <span key={tag} style={{ background: '#f0f0f0', borderRadius: 4, padding: '2px 6px', fontSize: 12, marginRight: 6 }}>{tag}</span>
-                ))}
-              </div>
-            )}
+    <div className="event-detail-container">
+      <div 
+        className="event-detail-header"
+        style={headerStyle}
+      >
+      </div>
+
+      <div className="event-detail-grid">
+        <div className="event-detail-card event-card">
+          <div className="event-detail-info">
+            <div className="event-detail-title">{eventItem.title}</div>
+            <div className="chips-row">
+              <span className="chip chip--muted">c {eventItem.date}</span>
+              <span className="chip">{eventItem.type}</span>
+              {eventItem.tags?.map(tag => (
+                <span key={tag} className="chip chip--muted">{tag}</span>
+              ))}
+            </div>
+            <div className="event-detail-description">
+              Приглашаем вас на уникальное мероприятие, организованное компанией "Инфотех". В этот день мы представим новейшие технологии и решения в области информационных технологий. Участники смогут посетить мастер-классы, где эксперты поделятся своими знаниями и опытом. Также будет возможность пообщаться с представителями ведущих компаний отрасли. Не упустите шанс расширить свои горизонты и завести полезные знакомства. Ждем вас на нашем мероприятии!
+            </div>
             <button 
-              className="btn-event"
-              style={{ marginTop: 16, background: '#1e90ff', color: '#fff', borderRadius: 10, padding: '10px 16px' }}
+              className="cta-button"
+              style={{ backgroundImage: gradients[eventItem.type] || 'linear-gradient(135deg, #787878, #161616)' }}
               onClick={() => alert('Заявка отправлена!')}
             >
-              Записаться
-            </button>
-            <button 
-              className="btn-event"
-              style={{ marginTop: 8 }}
-              onClick={() => navigate(-1)}
-            >
-              Назад
+              Участвовать
             </button>
           </div>
         </div>

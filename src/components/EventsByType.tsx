@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EventCard from '../components/EventCard';
-import type { EventItem } from '../events/allEvents';
+import type { EventItem } from '../types/events';
 import './EventsByType.css';
 import olympiada from '../img/olimp.png';
 import konkurs from '../img/kon.png';

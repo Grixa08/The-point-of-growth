@@ -9,17 +9,8 @@ import devices_28 from '../img/devices_28.svg';
 import folder_24 from '../img/folder_24.svg';
 import arrow_right_24 from '../img/arrow_right_20.svg';
 
-// Интерфейс для ивента
-export type EventItem = {
-  id: string;
-  title: string;
-  type: string;
-  company: string;
-  date: string;
-  isNew?: boolean;
-  tags?: string[];
-  imageUrl?: string;
-}
+import type { EventItem } from '../types/events';
+import { fetchAllEvents } from '../api/events';
 
 // Данные для карусели баннера
 const bannerSlides = [
@@ -55,7 +46,7 @@ const bannerSlides = [
   }
 ];
 
-// Моковые данные (потом заменятся на данные с бэка)
+// Моковые данные (фолбэк)
 const mockEvents: EventItem[] = [
   {
     id: '1',
@@ -130,9 +121,26 @@ function AllEvents() {
 
     const allTypes = ['Олимпиада', 'Конкурс', 'Стажировка', 'Вакансия', 'События'];
 
+    const [events, setEvents] = useState<EventItem[]>(mockEvents);
+
+    useEffect(() => {
+      let cancelled = false;
+      (async () => {
+        try {
+          const apiEvents = await fetchAllEvents();
+          if (!cancelled && Array.isArray(apiEvents) && apiEvents.length) {
+            setEvents(apiEvents);
+          }
+        } catch (_err) {
+          // тихий фолбэк на mockEvents
+        }
+      })();
+      return () => { cancelled = true; };
+    }, []);
+
     const eventsByType: Record<string, EventItem[]> = {};
     allTypes.forEach(type => {
-      eventsByType[type] = mockEvents.filter(e => e.type === type);
+      eventsByType[type] = events.filter(e => e.type === type);
     });
 
     const nonEmptySections = allTypes.filter(type => eventsByType[type].length > 0);

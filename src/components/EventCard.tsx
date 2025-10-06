@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { EventItem } from '../events/allEvents';
+import type { EventItem } from '../types/events';
 import '../events/AllEvents.css';
 
 interface EventCardProps extends EventItem {}
