@@ -5,23 +5,25 @@ import '../events/AllEvents.css';
 import './EventsByType.css';
 import './EventDetail.css';
 import { fetchEventById } from '../api/events';
+import { useMyEvents } from '../context/MyEventsContext';
 
 // Временно берём данные из моков страницы allEvents через localStorage/передачу id
 // Когда появится API, заменим на запрос к серверу
 
 const fallbackEvents: EventItem[] = [
-  { id: '1', title: 'Олимпиада по математике', type: 'Олимпиада', company: 'ООО "ЛучшийИнфоГигант"', date: '12 сентября', isNew: true, tags: ['Frontend', '2024'] },
-  { id: '2', title: 'Олимпиада по физике', type: 'Олимпиада', company: 'ООО "Наука"', date: '15 сентября', isNew: true, tags: ['Backend'] },
-  { id: '3', title: 'Конкурс программирования', type: 'Конкурс', company: 'ООО "Наука"', date: '15 сентября', isNew: true, tags: ['Backend'] },
-  { id: '4', title: 'Стажировка в IT компании', type: 'Стажировка', company: 'ООО "Наука"', date: '15 сентября', tags: ['Backend'] },
-  { id: '5', title: 'Вакансия разработчика', type: 'Вакансия', company: 'ООО "Наука"', date: '15 сентября', tags: ['Backend'] },
-  { id: '6', title: 'Вакансия разработчика', type: 'События', company: 'ООО "Наука"', date: '15 сентября', tags: ['Backend'] },
-  { id: '7', title: 'Конкурс программированияz', type: 'Конкурс', company: 'ООО "Наука"', date: '15 сентября', isNew: true, tags: ['Backend'] },
+  { id: '1', title: 'Олимпиада по математике', type: 'Олимпиада', company: 'ООО "ЛучшийИнфоГигант"', date: '30 октября 17:00', isNew: true, tags: ['Frontend', '2024'] },
+  { id: '2', title: 'Олимпиада по физике', type: 'Олимпиада', company: 'ООО "Наука"', date: 'до 20 ноября', isNew: true, tags: ['Backend'] },
+  { id: '3', title: 'Конкурс программирования', type: 'Конкурс', company: 'ООО "Наука"', date: '30 октября 17:00', isNew: true, tags: ['Backend'] },
+  { id: '4', title: 'Стажировка в IT компании', type: 'Стажировка', company: 'ООО "Наука"', date: '27 октября 17:00', tags: ['Backend'] },
+  { id: '5', title: 'Вакансия разработчика', type: 'Вакансия', company: 'ООО "Наука"', date: 'до 1 ноября', tags: ['Backend'] },
+  { id: '6', title: 'Вакансия разработчика', type: 'События', company: 'ООО "Наука"', date: '1 октября 17:00', tags: ['Backend'] },
+  { id: '7', title: 'Конкурс программирования', type: 'Конкурс', company: 'ООО "Наука"', date: '15 декабря 14:00', isNew: true, tags: ['Backend'] },
 ];
 
 function EventDetail() {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { addEvent, isEventAdded } = useMyEvents();
 
   const [eventItem, setEventItem] = useState<EventItem | undefined>(() => fallbackEvents.find(e => e.id === id));
 
@@ -84,10 +86,20 @@ function EventDetail() {
             </div>
             <button 
               className="cta-button"
-              style={{ backgroundImage: gradients[eventItem.type] || 'linear-gradient(135deg, #787878, #161616)' }}
-              onClick={() => alert('Заявка отправлена!')}
+              style={{ 
+                backgroundImage: gradients[eventItem.type] || 'linear-gradient(135deg, #787878, #161616)',
+                opacity: isEventAdded(eventItem.id) ? 0.7 : 1
+              }}
+              onClick={() => {
+                if (!isEventAdded(eventItem.id)) {
+                  addEvent(eventItem);
+                  alert('Событие добавлено в "Мои события"!');
+                } else {
+                  alert('Вы уже участвуете в этом событии!');
+                }
+              }}
             >
-              Участвовать
+              {isEventAdded(eventItem.id) ? 'Уже участвуете' : 'Участвовать'}
             </button>
           </div>
         </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../style/LoginForm.css';
 import { useNavigate } from 'react-router-dom';
+import { useUser } from '../context/UserContext';
 
 const MOCK_LOGIN = 'test@test.test';
 const MOCK_PASSWORD = 'test12';
@@ -17,6 +18,7 @@ const LoginForm: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isAuthError, setIsAuthError] = useState(false);
   const navigate = useNavigate();
+  const { fetchUserProfile } = useUser();
 
   const isFormFilled = login.trim() !== '' && password.trim() !== '';
 
@@ -44,7 +46,7 @@ const LoginForm: React.FC = () => {
   };
 
   // Обработка отправки формы
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isFormFilled) return;
     
@@ -53,7 +55,16 @@ const LoginForm: React.FC = () => {
     
     // Если валидация прошла, проверяем авторизацию
     if (login === MOCK_LOGIN && password === MOCK_PASSWORD) {
-      navigate('/allEvents');
+      // TODO: В реальном приложении здесь будет запрос к API для получения userId
+      // const response = await fetch('/api/auth/login', { ... });
+      // const { userId } = await response.json();
+      
+      // Пока используем моковый userId
+      const userId = '1';
+      
+      // Загружаем профиль пользователя с бэка
+      await fetchUserProfile(userId);
+      navigate('/account');
     } else {
       setIsAuthError(true);
     }
